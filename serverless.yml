@@ -1,0 +1,52 @@
+service: app-resilience-patterns
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  architecture: arm64
+  stage: ${opt:stage, 'prod'}
+  region: ${opt:region, 'eu-north-1'}
+  memorySize: ${opt:memory, 1024}
+  timeout: 10
+  logRetentionInDays: 7
+  versionFunctions: false
+  deploymentBucket:
+    blockPublicAccess: true
+    maxPreviousDeploymentArtifacts: 5
+    serverSideEncryption: AES256
+  stackTags:
+    service: ${self:service}
+    stage: ${self:provider.stage}
+    runtime: ${self:provider.runtime}
+    region: ${self:provider.region}
+  tags:
+    service: ${self:service}
+    stage: ${self:provider.stage}
+    runtime: ${self:provider.runtime}
+    region: ${self:provider.region}
+  apiGateway:
+    minimumCompressionSize: 1024
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+package:
+  individually: true
+
+functions:
+  CircuitBreaker:
+    handler: src/circuitBreaker.circuitBreakerHandler
+    description: Demo of circuit breaker calls
+    events:
+      - httpApi:
+          method: GET
+          path: /cb
+  Retry:
+    handler: src/retry.retryHandler
+    description: Demo of retry calls
+    events:
+      - httpApi:
+          method: GET
+          path: /retry
+    onerror: arn:aws:sns:us-east-1:XXXXXX:test # NOTE: Need to create this before-hand!

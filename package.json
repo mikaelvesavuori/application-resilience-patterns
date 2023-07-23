@@ -1,0 +1,44 @@
+{
+  "name": "application-resilience-patterns",
+  "version": "1.0.0",
+  "description": "Demos for resilience patterns in a distribued application context.",
+  "author": "Mikael Vesavuori",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx ts-node src/index.ts",
+    "test": "npx c8 -reporter=lcov ava"
+  },
+  "dependencies": {
+    "opossum": "7"
+  },
+  "devDependencies": {
+    "@ava/typescript": "3",
+    "@types/aws-lambda": "8",
+    "@types/node": "18",
+    "@types/opossum": "6",
+    "@typescript-eslint/eslint-plugin": "5",
+    "@typescript-eslint/parser": "5",
+    "ava": "5",
+    "c8": "7",
+    "eslint": "8",
+    "eslint-config-prettier": "8",
+    "eslint-plugin-prettier": "4",
+    "prettier": "2",
+    "ts-node": "10",
+    "typescript": "5"
+  },
+  "ava": {
+    "typescript": {
+      "rewritePaths": {
+        "src/": "lib/"
+      },
+      "compile": false
+    },
+    "files": [
+      "tests/**/*.ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  }
+}
